@@ -1,0 +1,24 @@
+Blenderbenchmark
+
+This repo is serving as the base for a collaborated effort to create a blender benchmarking solution.
+
+It will contain a Blender addon, a database, website & needed tools for all performance measuring tasks. I (Thomas) wrote the initial proof of concept to tell quickly if newer Blender versions underperform or outperform the version we use currently in production but I see that it could be very beneficial for many Blender users!
+
+Addon:
+--------
+The addon (once installed into your Blender version) will automatically download official test scenes, render them and collect data about your CPU/GPU/Blender config.
+
+Data:
+--------
+After the rendering is done, the addon it will authenticate via the OpenID service (using your BlenderID) and send the collected results to a centralized and secured benchmark server.
+
+Website:
+--------
+The website will take the supplied info and render a chart where you can see the overall cycles performance in the test scenes and how it progresses from version to version. On top, you will be able to filter your results (if logged on) and see how your pc performed in comparison with other contestants :)
+
+Hopefully this will wipe out all "which GPU/CPU config is the best for Blender" questions and give you dedicated answers to all questions about performance increases / decreases on subsequent Blender versions.
+
+As this development is pulling time from my day to day work, I assume that work on this project is mostly done in the nights. If you'd like to make me a bit more independent of those everyday duties, then by my German Blender book here http://goo.gl/isUpYe or use the link to buy something other from Amazon, everything helps!
+
+Best wishes and many greetings,
+Thomas (for the complete Plasmasolutions team)

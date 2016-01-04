@@ -1,0 +1,13 @@
+# Sublime files
+*.sublime-project
+*.sublime-workspace
+
+# Log files
+*.log
+
+# JIT compilations and object files
+*.pyo
+*.pyc
+
+# Folders that are created on the go
+py/images/
