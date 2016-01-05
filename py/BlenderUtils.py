@@ -2,17 +2,17 @@
 import subprocess, os #, urllib2
 import LogManager
 
-def GetBlenderVersionInformation(self, Executable):
+def GetBlenderVersionInformation(Executable):
 	result = []
 	for line in RunCommand(Executable + ' -v'):
 		result.append(line.decode("utf-8"))
 	
 	return ParseBuildInformation(result)
 
-def IsBlenderFromGit(self, Major, Minor):
+def IsBlenderFromGit(Major, Minor):
 	return (int(Major)>1) and (int(Minor) > 69)
 
-def ParseBuildInformation(self, VersionArray):
+def ParseBuildInformation(VersionArray):
 	buildInformation = {}
 	releaseInfo = []
 
@@ -33,13 +33,13 @@ def ParseBuildInformation(self, VersionArray):
 	#print(self.BuildInformation)
 	return buildInformation
 
-def RunCommand(self,CommandAndArgs, SpaceMarker= "<"):
+def RunCommand(CommandAndArgs, SpaceMarker= "<"):
 	# As we marked our spaces with our spaceMarker, we need to remove it here again to make the paths clean
 	myCommandAndArgs = CommandAndArgs.split()
 	for (i, item) in enumerate(myCommandAndArgs):
 		myCommandAndArgs[i] = item.replace(SpaceMarker,' ')
 
-	LogManager.Log.info("Running command '" + myCommandAndArgs + "'")
+	LogManager.Log.info("Running command '" + myCommandAndArgs[i] + "'")
 
 	# Execute the command
 	p = subprocess.Popen(myCommandAndArgs,
@@ -49,3 +49,26 @@ def RunCommand(self,CommandAndArgs, SpaceMarker= "<"):
 						#universal_newlines=True)
 	
 	return iter(p.stdout.readline, b'')
+
+def DownloadFile(Url):
+	file_name = Url.split('/')[-1]
+	u = urllib2.urlopen(Url)
+	f = open(file_name, 'wb')
+	meta = u.info()
+	file_size = int(meta.getheaders("Content-Length")[0])
+	print("Downloading: %s kBytes: %s" % (file_name, file_size/1024))
+
+	file_size_dl = 0
+	block_sz = 8192
+	while True:
+		buffer = u.read(block_sz)
+		if not buffer:
+			break
+
+		file_size_dl += len(buffer)
+		f.write(buffer)
+		status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+		status = status + chr(8)*(len(status)+1)
+		print(status,)
+
+	f.close()

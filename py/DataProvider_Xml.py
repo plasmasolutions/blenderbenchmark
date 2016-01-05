@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from xml.dom.minidom import parseString
 import sys, ResultSet
 
-class ResultSetHandlerClass(DataProviderClass):
+class XmlDataProviderClass(DataProviderClass):
 	"""Writes and reads test results"""
 	def __init__(self, PathAndFilename):
 		self.PathAndFilename = PathAndFilename
