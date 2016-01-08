@@ -4,7 +4,7 @@ class ResultSetClass(object):
 		self.Results = []
 		self.BuildInformation = {"hash":None,"platform":None, "release":None, "builddate":None, "commitdate": None, "committime":None}
 
-	def AddBuildInformation(self,BuildInformation):
+	def SetBuildInformation(self,BuildInformation):
 		self.BuildInformation = BuildInformation
 
 	def AddResult(self,Result):

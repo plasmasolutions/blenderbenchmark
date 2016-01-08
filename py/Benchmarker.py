@@ -3,6 +3,7 @@ import DataProvider_Xml
 import subprocess, os
 import hashlib
 import BlenderUtils
+import ResultSet
 
 class BlenderBenchmarkClass(object):
 	"""Represents the heart of this script. It can fetch Blenders version information,
@@ -30,42 +31,41 @@ class BlenderBenchmarkClass(object):
 	def Render(self):
 		# Loop trough all blender versions
 		for (index, executable) in enumerate(self._executables):
-			# Search in db for the current executable, get the id back.
-			# Insert in db if not found
 
 			#Create a result container and create a new result set
-			#resultSet = ResultSet.ResultSetClass()
+			resultSet = ResultSet.ResultSetClass()
 			
 			# and get the build information
-			#resultSet.AddBuildInformation(BlenderUtils.GetBlenderVersionInformation(self._executables[index]))
+			resultSet.SetBuildInformation(BlenderUtils.GetBlenderVersionInformation(self._executables[index]))
 
 			# then render all files, one after another
 			for renderTask in self._renderTasks:
-				renderInfo ='Error'
 
-				#print(">> Rendering "+ project[0] + " with " + resultSet.BuildInformation["release"])
+				print(">> Rendering "+ renderTask[0] + " with Blender version " + resultSet.BuildInformation["release"])
 				
 				# --engine CYCLES BLENDER_RENDER
 				md5 = hashlib.md5(open(renderTask[0],'rb').read()).hexdigest()
-				#imageoutput = "../images/results/"+ md5 + "_" + resultSet.BuildInformation["hash"] + "_"
+				imageoutput = "../images/results/"+ md5 + "_" + resultSet.BuildInformation["hash"] + "_"
 
 				for line in BlenderUtils.RunCommand(executable + 
 					" -b " + renderTask[0] + 
 					#" -o " + imageoutput +
 					" -F PNG  -x 1 -f "+ str(renderTask[1])):
 
-					# and look if the result is available already
+					#print(line.decode("utf-8"))
+
+					# And look if the result is available already
+					# btw. this is pretty weak - if "Saved:" is not recognized, the complete test result will vanish :(
 					if line.decode("utf-8").find('Saved: ') > -1:
-						renderInfo = line.decode("utf-8").split()
-						print(renderInfo)
-						#create md5 hash
-						#resultSet.AddResult({"filename":os.path.basename(renderTask[0]), "rendertime": renderInfo[3], "savetime":renderInfo[5].replace('(', '').replace(')', ''), "md5":md5, "frame": str(renderTask[1]).zfill(4)})
-			
+						consoleLine = line.decode("utf-8").split()
+						resultSet.AddResult({"filename":os.path.basename(renderTask[0]), "rendertime": consoleLine[3], "savetime":consoleLine[5].replace('(', '').replace(')', ''), "md5":md5, "frame": str(renderTask[1]).zfill(4)})
+						
+			print(resultSet.Results)
 			#Add the results
 			#self._resultSetHandler.AddResultSet(resultSet)
 
 		# All done, save result
-		#self._resultSetHandler.WriteToXml('../data/results.xml');
+		# self._resultSetHandler.WriteToXml('../data/results.xml');
 
 	def DownloadNewestOfficialBlender(self, Path):
 		# Path is existant?
@@ -77,8 +77,8 @@ class BlenderBenchmarkClass(object):
 Benchmark = BlenderBenchmarkClass()
 
 # Add as many blender versions as you'd like to test
-Benchmark.AddExecutable("/opt/Blender/Official/blender-2.70a-linux-glibc211-x86_64/blender")
 Benchmark.AddExecutable("/opt/Blender/Official/blender-2.70-linux-glibc211-x86_64/blender")
+Benchmark.AddExecutable("/opt/Blender/Official/blender-2.70a-linux-glibc211-x86_64/blender")
 
 #Add as many files as you'd like to render. And keep in mind: every file is rendered with every executable
 Benchmark.AddRenderTask("/mnt/iData/Projekte/Grafik/3D/BlenderTests/LEGO/StoneCollection.blend")

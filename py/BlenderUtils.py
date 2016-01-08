@@ -35,11 +35,11 @@ def ParseBuildInformation(VersionArray):
 
 def RunCommand(CommandAndArgs, SpaceMarker= "<"):
 	# As we marked our spaces with our spaceMarker, we need to remove it here again to make the paths clean
+	LogManager.Log.info("Running command '" + CommandAndArgs.replace(SpaceMarker,' ') + "'")
+
 	myCommandAndArgs = CommandAndArgs.split()
 	for (i, item) in enumerate(myCommandAndArgs):
 		myCommandAndArgs[i] = item.replace(SpaceMarker,' ')
-
-	LogManager.Log.info("Running command '" + myCommandAndArgs[i] + "'")
 
 	# Execute the command
 	p = subprocess.Popen(myCommandAndArgs,
@@ -72,3 +72,4 @@ def DownloadFile(Url):
 		print(status,)
 
 	f.close()
+	
